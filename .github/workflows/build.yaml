@@ -1,0 +1,38 @@
+name: Build Image Push to GHCR
+
+on:
+  push:
+    branches: main
+
+env:
+  IMAGE_NAME: "ghcr-nginx-sample"
+
+jobs:
+  ghcr_push:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Get repo name
+         id: repoName
+         run: echo "::set-output name=reponame::$(echo ${{github.repository}} | cut -d '/' -f 2)"
+
+     - name: Checkout
+       uses: actions/checkout@v2
+
+     - name: Build container image
+       run: docker build --tag $IMAGE_NAME .
+
+     - name: Log into GitHub Container Registry
+       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+     - name: Push poi image to GitHub Container Registry
+       run: |
+          IMAGE_ID=ghcr.io/${{ github.repository }}/$IMAGE_NAME
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          
+          echo IMAGE_ID=$IMAGE_ID
+          
+          echo "tag latest"
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
+
+          docker push $IMAGE_ID:latest
