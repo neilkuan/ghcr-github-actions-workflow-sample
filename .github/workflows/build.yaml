@@ -14,7 +14,7 @@ env:
   GHCR_REPO_URL: "ghcr.io/neilkuan/nginx"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
