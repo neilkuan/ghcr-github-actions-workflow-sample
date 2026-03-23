@@ -29,7 +29,7 @@
 
 ## 健康檢查端點
 
-以下路徑均回傳 `200` 與 `nginx OK`，可作為 liveness/readiness 使用：
+以下路徑均回傳 `200` 與 `nginx OK`，可作為 liveness/readiness 使用（使用精確匹配，子路徑不會命中）：
 
 - `/health_check`
 - `/health`
